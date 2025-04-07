@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<style>
+    body {
+            background-color: #f4f4f4;
+            font-family: 'Philosopher', sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #16589b;
+            color: #fff;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 270px; /* Push content to right */
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 600px;
+        }
+        .form-container img {
+            display: block;
+            margin: 0 auto 15px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container .btn {
+            width: 100%;
+        }
+</style>
+<body>
+
+<div class="sidebar">
+    <h2 class="text-center">Welcome</h2>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href=""><i class="bi bi-house-door-fill"></i> Home</a>
+    <a href="#" onclick="toggleMenu();"><i class="bi bi-person-circle"></i> Employee</a>
+    <div id="employeeSubmenu" style="display: none;">
+        <a href="{% url 'read2' %}" class="ms-3"><i class="bi bi-card-list"></i> Employee List</a>
+        <a href="{% url 'employeepersonal' %}?type=personal" class="ms-3"><i class="bi bi-file-person"></i> Personal Details</a>
+    </div>
+    <a href="{% url 'read' %}"><i class="bi bi-calendar-check"></i> Attendance</a>
+    <a href="{% url 'read3' %}"><i class="bi bi-credit-card-fill"></i> Payrolls</a>
+    <a href="{% url 'read4' %}"><i class="bi bi-calendar-check"></i> Leave</a>
+    <a href="{% url 'read5' %}"><i class="bi bi-laptop-fill"></i> Asset</a>
+    <a href="{% url 'document_list' %}"><i class="bi bi-file-earmark"></i> Document</a>
+    <a href="{% url 'empresign' %}"><i class="bi bi-card-text"></i>Resignation</a>
+    <a href="{% url 'home' %}"><i class="bi bi-gear"></i>Logout</a>
+</div>
+
+<div class="content">
+    <div class="form-container">
+    <h2 class="text-center mb-4">Basic Details</h2>
+    <form method="POST" action="{% url 'update_employee' user.id %}"  enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" id="user_id" value="{{ user.id }}">  <!-- Employee ID -->
+        <div class="mb-3">
+            <label class="form-label">Profile Picture</label>
+            {% if user.picture %}
+                <img src="{{ user.picture.url }}" alt="Employee Picture" class="rounded-circle border shadow" >
+            {% else %}
+                <img src="/static/uploads/image.png" alt="Default Profile" class="rounded-circle border shadow">
+            {% endif %}
+        </div>    
+        <div class="mb-3">
+            <label class="form-label">Employee Name</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" value="{{ user.employeename }}" name="employeename" id="employeename" placeholder="Employee Name" required>
+            </div>
+        </div>
+        <div class="mb-3">
+          <label for="surname" class="form-label">Last Name</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" value="{{ user.lastname }}" name="lastname" id="lastname" placeholder="lastname" required maxlength="20">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Employee ID</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-id-badge"></i></span>
+                <input type="number" class="form-control" value="{{ user.employeeid }}" name="employeeid" id="employeeid" placeholder="Employee ID" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Gmail</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="text" class="form-control" value="{{ user.gmail }}" name="gmail" id="gmail" placeholder="Employee ID" required>
+            </div>
+        </div>      
+        <div class="mb-3">
+            <label for="age" class="form-label">Age</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                <input type="text" name="age" class="form-control" value="{{ user.age }}" name="age" id="age" placeholder="enter the age"required maxlength="2" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="DOB" class="form-label">DOB</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                <input type="date" class="form-control" value="{{  user.date|date:'Y-m-d' }}" id="date" name="date" placeholder="enter the dob"required maxlength="20">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-gender-male"></i></span>
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+                    <option value="Others" {% if user.gender == "Others" %}selected{% endif %}>Others</option>
+                </select>                
+            </div>    
+        </div>
+        <div class="mb-3">
+            <label for="mobile" class="form-label">Mobile</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                <input type="text" class="form-control" value="{{ user.mobile }}" id="mobile" name="mobile" placeholder="enter the mobile number" required maxlength="10"required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Department</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+                <select class="form-select" id="department" name="department" required>
+                    <option value="">Select the department</option>
+                    <option value="Web Developer" {% if user.department == "Web Developer" %}selected{% endif %}>Web Developer</option>
+                    <option value="FullStack Developer" {% if user.department == "FullStack Developer" %}selected{% endif %}>FullStack Developer</option>
+                    <option value="UI/UX Developer" {% if user.department == "UI/UX Developer" %}selected{% endif %}>UI/UX Developer</option>
+                    <option value="Graphic Designer" {% if user.department == "Graphic Designer" %}selected{% endif %}>Graphic Designer</option>
+                    <option value="Video Editor" {% if user.department == "Video Editor" %}selected{% endif %}>Video Editor</option>
+                    <option value="Web Designer" {% if user.department == "Web Designer" %}selected{% endif %}>Web Designer</option>
+                    <option value="Support" {% if user.department == "Support" %}selected{% endif %}>Support</option>
+                    <option value="QA Analyst" {% if user.department == "QA Analyst" %}selected{% endif %}>QA Analyst</option>
+                    <option value="Others" {% if user.department == "Others" %}selected{% endif %}>Others</option>
+                </select>                
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Qualification</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+                <select class="form-select" id="qualification" name="qualification" required>
+                    <option value="">Select</option>
+                    <option value="BA" {% if user.qualification == "BA" %}selected{% endif %}>BA</option>
+                    <option value="BSc" {% if user.qualification == "BSc" %}selected{% endif %}>B.Sc</option>
+                    <option value="BCom" {% if user.qualification == "BCom" %}selected{% endif %}>B.Com</option>
+                    <option value="BBA" {% if user.qualification == "BBA" %}selected{% endif %}>BBA</option>
+                    <option value="BCA" {% if user.qualification == "BCA" %}selected{% endif %}>BCA</option>
+                    <option value="BBS" {% if user.qualification == "BBS" %}selected{% endif %}>BBS</option>
+                    <option value="BE" {% if user.qualification == "BE" %}selected{% endif %}>BE</option>
+                    <option value="BTech" {% if user.qualification == "BTech" %}selected{% endif %}>B.Tech</option>
+                    <option value="MTech" {% if user.qualification == "MTech" %}selected{% endif %}>M.Tech</option>
+                    <option value="ME" {% if user.qualification == "ME" %}selected{% endif %}>ME</option>
+                    <option value="MA" {% if user.qualification == "MA" %}selected{% endif %}>MA</option>
+                    <option value="MSc" {% if user.qualification == "MSc" %}selected{% endif %}>M.Sc</option>
+                    <option value="MCA" {% if user.qualification == "MCA" %}selected{% endif %}>MCA</option>
+                    <option value="MBA" {% if user.qualification == "MBA" %}selected{% endif %}>MBA</option>
+                    <option value="others" {% if user.qualification == "others" %}selected{% endif %}>others</option>
+                </select>                
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Salary</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
+                <input type="text" class="form-control" value="{{ user.salary }}" name="salary" id="salary" placeholder="Enter the Salary" required>
+            </div>
+        </div><br>
+        <div class="text-center">
+            <button type="submit" id="update" class="btn btn-success"><i class="fa fa-paper-plane"></i>Update</button>
+        </div>
+    </form>    
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("employeeSubmenu");
+        menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+    }
+</script>
+</html>

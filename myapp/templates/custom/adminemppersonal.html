@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Table</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Philosopher', sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .container-fluid {
+            padding-left: 270px;
+            padding-right: 0;
+        }
+</style>
+<body>
+<div class="sidebar">
+    <h2 class="text-center">MY Admin</h2>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="{% url 'admin_dashboard' %}"><i class="fas fa-chart-bar"></i> Home</a>
+    <a href="#" onclick="toggleMenu();"><i class="bi bi-person-circle"></i> Employee</a>
+    <div id="employeeSubmenu" style="display: none;">
+        <a href="{% url 'adminemployee' %}" class="ms-3"><i class="bi bi-card-list"></i> Employee List</a>
+        <a href="#" class="ms-3"><i class="bi bi-file-person"></i> Personal Details</a>
+    </div>
+    <a href="{% url 'adminattendance' %}"><i class="bi bi-calendar-check"></i> Attendance</a>
+    <a href=""><i class="bi bi-credit-card-fill"></i> Payrolls</a>
+    <a href="{% url 'adminleave' %}"><i class="bi bi-calendar-check"></i> Leave</a>
+    <a href=""><i class="bi bi-laptop-fill"></i> Asset</a>
+    <a href=""><i class="bi bi-file-earmark"></i> Document</a>
+    <a href=""><i class="bi bi-gear"></i>Logout</a>
+</div><br>
+<div class="container-fluid">
+  <h2 class="text-center my-4">Employee Details</h2>
+
+  <div class="container">
+      <div class="row">
+          <!-- Basic Details -->
+          <div class="col-md-6">
+              <div class="card shadow-sm mb-3">
+                  <div class="card-header bg-success text-white">
+                      <h5>Basic Details</h5>
+                  </div>
+                  <div class="card-body text-center">
+                      <!-- Profile Picture -->
+                      {% if user.picture %}
+                      <img src="{{ user.picture.url }}" class="rounded-circle mb-3" width="120" alt="Profile Picture" />
+                      {% else %}
+                      <img src="/static/uploads/image.png" class="rounded-circle mb-3" width="120" alt="Default Picture" />
+                      {% endif %}
+                      
+                      <p><strong>Name:</strong> {{ user.employeename }}</p>
+                      <p><strong>Employee ID:</strong> {{ user.employeeid }}</p>
+                      <p><strong>Email:</strong> {{ user.gmail }}</p>
+                      <p><strong>Age:</strong> {{ user.age }}</p>
+                      <p><strong>Gender:</strong> {{ user.gender }}</p>
+                      <p><strong>DOB:</strong> {{ user.date }}</p>
+                      <p><strong>Mobile:</strong> {{ user.mobile }}</p>
+                      <p><strong>Department:</strong> {{ user.department }}</p>
+                      <p><strong>Qualification:</strong> {{ user.qualification }}</p>
+                      <p><strong>Salary:</strong> ₹{{ user.salary }}</p>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Personal Details -->
+          <div class="col-md-6">
+              <div class="card shadow-sm mb-3">
+                  <div class="card-header bg-info text-white">
+                      <h5>Personal Details</h5>
+                  </div>
+                  <div class="card-body">
+                      <p><strong>Father's Name:</strong> {{ user.fathername }}</p>
+                      <p><strong>Mother's Name:</strong> {{ user.mothername }}</p>
+                      <p><strong>Father Contact:</strong> {{ user.fathercontact }}</p>
+                      <p><strong>Address:</strong> {{ user.address }}, {{ user.city }}</p>
+                      <p><strong>State:</strong> {{ user.state }}</p>
+                      <p><strong>Country:</strong> {{ user.country }}</p>
+                      <p><strong>Marital Status:</strong> {{ user.status }}</p>
+                  </div>
+              </div>
+              <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Work Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Department:</strong> {{ user.workdepartment }}</p>
+                    <p><strong>Experience:</strong> {{ user.experience }} years</p>
+                    <p><strong>Work Location:</strong> {{ user.worklocation }}</p>
+                    <p><strong>Joining Date:</strong> {{ user.joindate }}</p>
+                    <p><strong>Shift Timing:</strong> {{ user.shifttime }}</p>
+                    <p><strong>Employee Type:</strong> {{ user.employeetype }}</p>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("employeeSubmenu");
+        menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+    }
+</script>
+</html>
