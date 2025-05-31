@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Table</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 15px;
+        }
+        .container-d{
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 50px;
+            
+        }
+        .container-box {
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            margin-bottom: 80px;
+            width: 300px;
+        }
+        .card {
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            border: none;
+            margin-bottom: 30px;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .card .card-block {
+            padding: 25px;
+        }
+        .bg-c-blue {
+            background: linear-gradient(45deg, #4099ff,#4a5c64);
+         }
+
+        .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #4a5c64);
+        }
+
+        .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #4a5c64);
+        }
+
+        #box3{
+            background-color: blueviolet;
+        }
+        #box4{
+            background-color: orangered;
+        }
+        .bg-info-card {
+            background-color: rgba(23, 162, 184, 0.7);
+        }
+        .bg-success-card {
+            background-color: rgba(40, 167, 69, 0.7);
+        }
+        .bg-warning-card {
+            background-color: rgba(255, 193, 7, 0.7);
+        }
+        .bg-danger-card {
+            background-color: rgba(220, 53, 69, 0.7);
+        }
+</style>
+<body>
+<div class="sidebar">
+    <h2 class="text-center">MY Admin</h2>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#"><i class="fas fa-chart-bar"></i> Home</a>
+    <a href="{% url 'index' %}"><i class="fas fa-table"></i> Attendance</a>
+    <a href="#"><i class="fas fa-folder"></i> Contact</a>
+    <a href="{% url 'adminpayroll' %}"><i class="fas fa-folder"></i>Payrolls</a>
+</div>
+<div class="content">
+    <pre>{{ chart }}</pre>
+    <img src="{% url 'department_chart' %}" alt="Pie Chart" />
+    <script id="is-admin-data" type="application/json">
+        {{ is_admin|yesno:"true,false"|lower }}
+    </script>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Employees Payrolls</h3>
+            <button id="export-btn-right" class="btn btn-success">Export</button>
+        </div>
+        {% csrf_token %} 
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Department</th>
+                    <th>Contact No</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in member %}
+                <tr data-id="{{ member.id }}">
+                    <td>{{ member.id }}</td>
+                    <td>
+                        <span class="text">{{ member.employeename }}</span>
+                        {% if is_admin %}
+                            <input type="text" class="form-control edit-field" name="employeename" value="{{ member.employeename }}" hidden>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="text">{{ member.employeeid }}</span>
+                        {% if is_admin %}
+                            <input type="text" class="form-control edit-field" name="employeeid" value="{{ member.employeeid }}" hidden>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="text">{{ member.department }}</span>
+                        {% if is_admin %}
+                            <input type="text" class="form-control edit-field" name="department" value="{{ member.department }}" hidden>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="text">{{ member.contactno }}</span>
+                        {% if is_admin %}
+                            <input type="text" class="form-control edit-field" name="contactno" value="{{ member.contactno }}" hidden>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="text">{{ member.salary }}</span>
+                        {% if is_admin %}
+                            <input type="date" class="form-control edit-field" name="date" value="{{ member.salary }}" hidden>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if is_admin %}
+                            <button class="btn btn-primary edit-btn">Edit</button>
+                            <button class="btn btn-success save-btn" hidden>Save</button>
+                        {% endif %}
+                        <button class="btn btn-warning mail-btn">Mail</button>
+                    </td>                    
+                </tr>
+                {% endfor %}
+            </tbody>            
+        </table>
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+    </div>
+</div>
+<script>
+    document.getElementById("export-btn-right").addEventListener("click", function() {
+        window.location.href = "{% url 'export_data' %}";
+    });
+</script>
+<script>
+    $(document).ready(function () {
+            // Get isAdmin value safely
+            var isAdmin = JSON.parse(document.getElementById("is-admin-data").textContent);
+
+            if (!isAdmin) {
+                $(".edit-btn, .save-btn").remove();
+            }
+
+            // Handle Edit button click
+            $(".edit-btn").click(function () {
+                var row = $(this).closest("tr");
+
+                row.find(".text").hide();
+                row.find(".edit-field").removeAttr("hidden");
+                row.find(".edit-btn").hide();
+                row.find(".save-btn").removeAttr("hidden");
+            });
+
+            // Handle Save button click
+            $(".save-btn").click(function () {
+                var row = $(this).closest("tr");
+                var id = row.data("id");
+                var csrftoken = $("#csrf_token").val();
+
+                var data = {
+                    employeename: row.find("input[name='employeename']").val(),
+                    employeeid: row.find("input[name='employeeid']").val(),
+                    department: row.find("input[name='department']").val(),
+                    contactno: row.find("input[name='contactno']").val(),
+                    date: row.find("input[name='date']").val(),
+                    intime: row.find("input[name='intime']").val(),
+                    outtime: row.find("input[name='outtime']").val(),
+                    status: row.find("select[name='status']").val(),
+                };
+
+                $.ajax({
+                    url: `/update_employee/${id}/`,
+                    type: "POST",
+                    data: data,
+                    headers: { "X-CSRFToken": csrftoken },
+                    success: function (response) {
+                        alert("Employee updated successfully!");
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        alert("Error: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Table</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+</head>
+<style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Philosopher', sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 15px;
+        }
+        .container-d{
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 50px;
+            
+        }
+        .container-box {
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            margin-bottom: 80px;
+            width: 300px;
+        }
+        .card {
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            border: none;
+            margin-bottom: 30px;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .card .card-block {
+            padding: 25px;
+        }
+        .bg-c-blue {
+            background: linear-gradient(45deg, #4099ff,#4a5c64);
+         }
+
+        .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #4a5c64);
+        }
+
+        .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #4a5c64);
+        }
+        .bg-c-red {
+        background: linear-gradient(45deg, #ec4022, #4a5c64);
+        }
+        
+        #calendar {
+          font-family: Arial, sans-serif;
+          margin-left: 290px;
+        }
+        #calendar table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        #calendar th, #calendar td {
+          padding: 5px;
+          text-align: center;
+        }
+        #calendar .today {
+          background-color: #007bff;
+          color: white;
+          border-radius: 50%;
+        }
+        #calendar .calendar-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          
+        }
+</style>
+<body>
+<div class="sidebar">
+    <h2 class="text-center">MY Admin</h2>
+    <a href="{% url 'admin_dashboard' %}"><i class="fas fa-chart-bar"></i> Home</a>
+    <a href="{% url 'adminemployee' %}" ><i class="bi bi-card-list"></i> Employees</a>
+    <a href="{% url 'admincareer' %}"><i class="bi bi-calendar-check"></i> Career</a>
+    <a href="{% url 'attendance_summary' %}"><i class="bi bi-calendar-check"></i> Attendance</a>
+    <a href="{% url 'adminpayroll' %}"><i class="bi bi-credit-card-fill"></i> Payrolls</a>
+    <a href="{% url 'adminleave' %}"><i class="bi bi-calendar-check"></i> Leave</a>
+    <a href="{% url 'adminassets' %}"><i class="bi bi-laptop-fill"></i> Asset</a>
+    <a href="{% url 'admindocument' %}"><i class="bi bi-file-earmark"></i> Document</a>
+    <a href="{% url 'adminresign' %}"><i class="bi bi-card-text"></i>Resignation</a>
+    <a href="{% url 'home' %}"><i class="bi bi-gear"></i>Logout</a>
+</div>
+<div class="content">
+     <h3 class="mb-4">DASHBOARD</h3>
+     <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-blue order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20"> Total Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ employeename }}</span></h2>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-green order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Present Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ present_employees }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-yellow order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Absent Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ absent_employees }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-red order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Leave Approved Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ leave_approved }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-blue order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20"> Status of Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span></span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-green order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Male Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ male_count }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-yellow order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Female Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ female_count }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-red order-card">
+                  <div class="card-block">
+                    <h6 class="m-b-20">Vaccation Employee</h6>
+                    <h2 class="text-right"><i class="fas fa-chalkboard-teacher f-left"></i><span>{{ vacation_employees }}</span></h2>
+                    <!-- <p class="m-b-0">Pending Teacher<span class="f-right">{{pendingteachercount}}</span></p> -->
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br><br>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <!-- Calendar -->
+        <div class="col-sm-12 col-xl-6" style="margin-left: 30px;">
+            <div class="bg-light rounded p-4">
+                <h5 class="mb-4">Calendar</h5>
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        <!-- Pie Chart 1: Gender Distribution -->
+        <div class="col-sm-12 col-xl-4" style="margin-left: 100px;">
+            <div class="bg-light rounded p-4 text-center">
+                <h5 class="mb-4">Gender Distribution</h5>
+                <canvas id="genderPieChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div><br><br>
+
+        <!-- Bar Chart: Employees per Department -->
+        <div class="col-sm-12 col-xl-4" style="margin-left: 250px;">
+            <div class="bg-light rounded p-4">
+                <h5 class="mb-4">Employees per Department</h5>
+                <canvas id="departmentBarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie Chart 2: Department Distribution -->
+        <div class="col-sm-12 col-xl-4" style="margin-left: 100px;">
+            <div class="bg-light rounded p-4 text-center">
+                <h5 class="mb-4">Department Distribution</h5>
+                <canvas id="workingDeptPieChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+  function renderCalendar(date = new Date()) {
+    const calendar = document.getElementById("calendar");
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    const today = new Date();
+
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const startDay = firstDay.getDay();
+
+    let daysHtml = "";
+    for (let i = 0; i < startDay; i++) {
+      daysHtml += "<td></td>";
+    }
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const isToday = today.getDate() === d &&
+                      today.getMonth() === currentMonth &&
+                      today.getFullYear() === currentYear;
+      daysHtml += `<td class="${isToday ? 'today' : ''}">${d}</td>`;
+      if ((d + startDay) % 7 === 0) daysHtml += "</tr><tr>";
+    }
+
+    calendar.innerHTML = `
+      <div class="calendar-header">
+        <button onclick="changeMonth(-1)">&#9664;</button>
+        <h6>${date.toLocaleString('default', { month: 'long' })} ${currentYear}</h6>
+        <button onclick="changeMonth(1)">&#9654;</button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th>
+          </tr>
+        </thead>
+        <tbody><tr>${daysHtml}</tr></tbody>
+      </table>
+    `;
+
+    window._calendarDate = date;
+  }
+
+  function changeMonth(offset) {
+    const current = window._calendarDate || new Date();
+    const newDate = new Date(current.getFullYear(), current.getMonth() + offset, 1);
+    renderCalendar(newDate);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => renderCalendar());
+</script>
+<script>
+  // Bar Chart Data
+  const deptCtx = document.getElementById('departmentBarChart').getContext('2d');
+  const departmentBarChart = new Chart(deptCtx, {
+    type: 'bar',
+    data: {
+      labels: ['HR', 'Finance', 'Engineering', 'Marketing', 'Sales'],
+      datasets: [{
+        label: 'Employees',
+        data: [10, 7, 15, 5, 8], // Replace with dynamic values from backend
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Pie Chart 1: Gender Distribution
+  const genderCtx = document.getElementById('genderPieChart').getContext('2d');
+  const genderPieChart = new Chart(genderCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Male', 'Female'],
+      datasets: [{
+        data: [{ male_count }, { female_count }], // Django dynamic context
+        backgroundColor: ['#36A2EB', '#FF6384']
+      }]
+    }
+  });
+
+  // Pie Chart 2: Department Distribution
+  const workingDeptCtx = document.getElementById('workingDeptPieChart').getContext('2d');
+  const workingDeptPieChart = new Chart(workingDeptCtx, {
+    type: 'pie',
+    data: {
+      labels: ['HR', 'Finance', 'Engineering', 'Marketing', 'Sales'],
+      datasets: [{
+        data: [5, 7, 10, 4, 6], // Replace with real values
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+      }]
+    }
+  });
+</script>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</html>
